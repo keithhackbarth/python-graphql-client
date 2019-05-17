@@ -2,11 +2,12 @@ from six.moves import urllib
 import json
 
 class GraphQLClient:
-    def __init__(self, endpoint):
+    def __init__(self, endpoint, timeout=None):
         self.endpoint = endpoint
+        self.timeout = timeout
         self.token = None
         self.headername = None
-
+        
     def execute(self, query, variables=None):
         return self._send(query, variables)
 
@@ -26,7 +27,7 @@ class GraphQLClient:
         req = urllib.request.Request(self.endpoint, json.dumps(data).encode('utf-8'), headers)
 
         try:
-            response = urllib.request.urlopen(req)
+            response = urllib.request.urlopen(req, timeout=self.timeout)
             return response.read().decode('utf-8')
         except urllib.error.HTTPError as e:
             print((e.read()))
